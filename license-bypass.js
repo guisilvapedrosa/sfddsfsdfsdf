@@ -1,72 +1,74 @@
 /**
- * License Bypass — Remove a dependência de licença/Supabase.
- *
- * Este script é carregado ANTES do popup.js e sobrescreve as funções
- * de licença do config.js para que sempre retornem "válido".
- * Também força a tela de chat a aparecer direto e bloqueia
- * mensagens de forceLogout vindas do background.js.
+ * License Bypass — intercepta fetch e funções de licença.
+ * Carregado ANTES do popup.js para garantir que as interceptações
+ * estejam ativas quando o código ofuscado rodar.
  */
 
 const BYPASS_LICENSE_KEY = 'SPRT-FREE-FREE-FREE';
 
-// 1) validateLicense → sempre retorna válido
-validateLicense = async function(_key, _force) {
-  return { success: true, valid: true };
+// ─── 1. Salvar licença fake no storage AGORA (síncrono via callback) ──────────
+chrome.storage.local.set({
+  license: BYPASS_LICENSE_KEY,
+  licenseValidatedAt: Date.now()
+});
+
+// ─── 2. Interceptar fetch globalmente ─────────────────────────────────────────
+// Qualquer chamada ao endpoint de validação retorna "válido" na hora,
+// sem nem chegar no servidor.
+const _originalFetch = window.fetch.bind(window);
+window.fetch = async function(url, options) {
+  const urlStr = typeof url === 'string' ? url : (url?.url || '');
+
+  // Interceptar validate-license → retornar válido localmente
+  if (urlStr.includes('validate-license')) {
+    return new Response(
+      JSON.stringify({ success: true, valid: true, nonce: null }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Todas as outras chamadas (send-message, enhance, etc.) passam normalmente
+  return _originalFetch(url, options);
 };
 
-// 2) getSavedLicense → sempre retorna uma licença fake salva
-getSavedLicense = async function() {
-  return { license: BYPASS_LICENSE_KEY, licenseValidatedAt: Date.now() };
-};
+// ─── 3. Sobrescrever funções de licença do config.js ──────────────────────────
+// Garante que mesmo se o popup.js chamar via referência de função,
+// ele receba resposta válida.
+validateLicense  = async () => ({ success: true, valid: true });
+getSavedLicense  = async () => ({ license: BYPASS_LICENSE_KEY, licenseValidatedAt: Date.now() });
+saveLicense      = async () => {};
+removeLicense    = async () => {};
+logoutLicense    = async () => {};
 
-// 3) saveLicense → no-op (não precisa salvar nada)
-saveLicense = async function() {};
+// ─── 4. Bloquear forceLogout do background.js ─────────────────────────────────
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg?.action === 'forceLogout') return true; // ignorar
+});
 
-// 4) removeLicense → no-op
-removeLicense = async function() {};
-
-// 5) logoutLicense → no-op
-logoutLicense = async function() {};
-
-// 6) formatLicenseKey → retorna a chave bypass
-const _origFormat = formatLicenseKey;
-formatLicenseKey = function(key) {
-  if (!key || key === BYPASS_LICENSE_KEY) return BYPASS_LICENSE_KEY;
-  return _origFormat(key);
-};
-
-// 7) Bloquear mensagens de forceLogout do background.js
-if (chrome && chrome.runtime && chrome.runtime.onMessage) {
-  chrome.runtime.onMessage.addListener((msg, _sender, _sendResponse) => {
-    if (msg && msg.action === 'forceLogout') {
-      // Ignorar — não deixar deslogar
-      return true;
-    }
-  });
+// ─── 5. Forçar tela de chat via DOM ───────────────────────────────────────────
+// Roda em dois momentos pra garantir: imediato + após DOM pronto
+function _showChat() {
+  const ls = document.getElementById('licenseScreen');
+  const cs = document.getElementById('chatScreen');
+  if (ls) ls.classList.remove('active');
+  if (cs) cs.classList.add('active');
+  const sub = document.getElementById('licenseSubtitle');
+  if (sub) sub.textContent = 'Licença ativa';
 }
 
-// 8) Ao carregar, forçar a tela de chat direto
+_showChat(); // tenta já
+
 document.addEventListener('DOMContentLoaded', () => {
-  const licenseScreen = document.getElementById('licenseScreen');
-  const chatScreen = document.getElementById('chatScreen');
+  _showChat();
+  // Notificar background que licença foi ativada
+  chrome.runtime.sendMessage({ action: 'licenseActivated' }).catch(() => {});
+});
 
-  if (licenseScreen) licenseScreen.classList.remove('active');
-  if (chatScreen) chatScreen.classList.add('active');
-
-  // Atualizar subtítulo da licença no header
-  const subtitle = document.getElementById('licenseSubtitle');
-  if (subtitle) subtitle.textContent = 'Licença ativa';
-
-  // Salvar licença fake no storage pra background.js não reclamar
-  if (chrome && chrome.storage && chrome.storage.local) {
-    chrome.storage.local.set({
-      license: BYPASS_LICENSE_KEY,
-      licenseValidatedAt: Date.now()
-    });
-  }
-
-  // Notificar background que licença foi "ativada"
-  if (chrome && chrome.runtime && chrome.runtime.sendMessage) {
-    chrome.runtime.sendMessage({ action: 'licenseActivated' }).catch(() => {});
-  }
+// Fallback: observar mudanças no DOM caso popup.js reabra a tela de licença
+const _observer = new MutationObserver(() => {
+  const ls = document.getElementById('licenseScreen');
+  if (ls?.classList.contains('active')) _showChat();
+});
+document.addEventListener('DOMContentLoaded', () => {
+  _observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
 });
