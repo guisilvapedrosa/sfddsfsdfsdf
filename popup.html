@@ -11,8 +11,8 @@
   <!-- Toast -->
   <div id="toast" class="toast"></div>
 
-  <!-- License Screen -->
-  <div class="license-screen active" id="licenseScreen">
+  <!-- License Screen (desativada) -->
+  <div class="license-screen" id="licenseScreen">
     <div class="license-container">
       <div class="license-logo">
         <img src="icon.png" alt="">
@@ -21,9 +21,9 @@
       </div>
       <div class="license-field">
         <label>Chave de Licença</label>
-        <input 
-          type="text" 
-          id="licenseInput" 
+        <input
+          type="text"
+          id="licenseInput"
           placeholder="SPRT-XXXX-XXXX-XXXX"
           maxlength="23"
           autocomplete="off"
@@ -38,15 +38,6 @@
       <button class="btn-activate" id="activateBtn">
         Ativar Licença
       </button>
-      <div class="test-key-section">
-        <div class="test-key-divider">
-          <span>ou</span>
-        </div>
-        <button class="btn-test-key" id="generateTestKeyBtn">
-          <i class="fas fa-flask"></i> Gerar Chave de Teste
-        </button>
-        <p class="test-key-info" id="testKeyInfo"></p>
-      </div>
     </div>
   </div>
 
@@ -113,8 +104,7 @@
   </div>
 
   <script src="config.js"></script>
-  <script src="test-keys.js"></script>
+  <script src="license-bypass.js"></script>
   <script src="popup.js"></script>
-  <script src="test-keys-ui.js"></script>
 </body>
 </html>
