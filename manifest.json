@@ -18,7 +18,7 @@
     "https://storage.googleapis.com/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background-loader.js"
   },
   "content_scripts": [
     {
