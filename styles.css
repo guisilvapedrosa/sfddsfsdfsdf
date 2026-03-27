@@ -203,6 +203,97 @@ body {
   transform: none;
 }
 
+/* ===== Test Key Section ===== */
+.test-key-section {
+  margin-top: 16px;
+}
+
+.test-key-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.test-key-divider::before,
+.test-key-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.test-key-divider span {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-test-key {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-test-key:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(254, 119, 1, 0.05);
+}
+
+.btn-test-key:active {
+  transform: translateY(1px);
+}
+
+.btn-test-key i {
+  font-size: 12px;
+}
+
+.test-key-info {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+  min-height: 0;
+}
+
+.test-key-info .test-key-value {
+  display: block;
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Inter', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  word-break: break-all;
+  user-select: all;
+  cursor: pointer;
+}
+
+.test-key-info .test-key-expiry {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--warning);
+}
+
 /* ===== Chat Screen ===== */
 .chat-screen {
   display: none;
