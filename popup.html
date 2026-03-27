@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title id="appTitle"></title>
+  <link rel="stylesheet" href="fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- License Screen -->
+  <div class="license-screen active" id="licenseScreen">
+    <div class="license-container">
+      <div class="license-logo">
+        <img src="icon.png" alt="">
+        <h1 id="appNameLogin"></h1>
+        <p>Ative sua licença para continuar</p>
+      </div>
+      <div class="license-field">
+        <label>Chave de Licença</label>
+        <input 
+          type="text" 
+          id="licenseInput" 
+          placeholder="SPRT-XXXX-XXXX-XXXX"
+          maxlength="23"
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+      <div class="remember-row">
+        <label class="remember-label">
+          <input type="checkbox" id="rememberKey"> Salvar licença
+        </label>
+      </div>
+      <button class="btn-activate" id="activateBtn">
+        Ativar Licença
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Screen -->
+  <div class="chat-screen" id="chatScreen">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <img src="icon.png" alt="Sparta">
+        <div>
+          <div class="header-title" id="appNameHeader"></div>
+          <div class="header-subtitle" id="licenseSubtitle"></div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="status-dot" id="statusDot" title="Offline"></div>
+        <button class="btn-icon" id="clearHistoryBtn" title="Limpar histórico">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+        <button class="btn-icon" id="logoutBtn" title="Sair">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area" id="chatArea">
+      <div class="info-box">
+        <i class="fas fa-shield-alt"></i>
+        Abra um projeto no Lovable.dev para conectar
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <div class="file-preview" id="filePreview"></div>
+      <div class="input-card">
+        <textarea id="messageInput" placeholder="Como posso ajudar?" rows="1"></textarea>
+        <div class="input-actions-row">
+          <div class="input-actions-left">
+            <input type="file" id="fileInput" style="display:none" accept="image/*" multiple>
+            <button class="btn-action" id="attachBtn" title="Anexar imagem">
+              <i class="fas fa-paperclip"></i>
+            </button>
+            <button class="btn-action btn-action-green" id="enhanceBtn" title="Melhorar prompt com IA">
+              <i class="fas fa-wand-magic-sparkles"></i>
+            </button>
+            <button class="btn-action btn-action-red" id="removeWatermarkBtn" title="Remover marca d'água">
+              <i class="fas fa-eye-slash"></i>
+            </button>
+          </div>
+          <button class="btn-send" id="sendBtn" disabled title="Enviar">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+      <div class="footer-brand">
+        <img src="icon.png" alt="Sparta">
+        <span class="footer-brand-name" id="appFooterName"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

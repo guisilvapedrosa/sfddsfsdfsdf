@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Primote Labs",
+  "version": "1.1",
+  "description": "Prompts Ilimitados na Lovable",
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "webRequest",
+    "cookies",
+    "sidePanel",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://*.lovable.dev/*",
+    "https://*.supabase.co/*",
+    "https://storage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.lovable.dev/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "side_panel": {
+    "default_path": "popup.html"
+  },
+  "action": {
+    "default_icon": "icon.png",
+    "default_title": "Primote Labs"
+  },
+  "icons": {
+    "128": "icon.png"
+  }
+}
